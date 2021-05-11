@@ -346,25 +346,30 @@ const AppAuthStack = ({ navigation }) => {
 }
 
 const AppNavigator = (props) => {
+  const dispatch = useDispatch();
+  const [isLogin, setIsLogin] = useState(false)
+
   const { isLoggedIn, user: currentUser } = useSelector((state) => {
     //console.log("state 11==>", state)
     return state.auth
   });
-  const dispatch = useDispatch();
-  const [isLogin, setIsLogin] = useState(isLoggedIn ? true : false)
 
   /**
    * clear message when changing location
    */
   useEffect(() => {
-    // console.log("currentUser ==>", currentUser)
-    //console.log("isLoggedIn ==>", isLoggedIn)
-    //console.log("isLogin ==>", isLogin)
     //history.listen((location) => {
-    dispatch(checkLogin());
+    dispatch(checkLogin())
+      .then(() => {
+        setIsLogin(isLoggedIn)
+      })
+      .catch((err) => {
+        console.log("err ==>", err)
+      });
     dispatch(clearMessage()); // clear message when changing location
+
     //});
-  }, [dispatch]);
+  }, [dispatch, isLoggedIn, currentUser]);
 
   /**
    * logout 

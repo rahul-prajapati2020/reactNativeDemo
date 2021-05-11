@@ -71,7 +71,7 @@ const SignInScreen = ({ navigation }) => {
             console.log('form submit')
             dispatch(login(fields))
                 .then((res) => {
-                    console.log("res ===>", res)
+                    setLoading(false);
                 })
                 .catch(() => {
                     setLoading(false);
