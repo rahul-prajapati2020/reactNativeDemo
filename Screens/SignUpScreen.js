@@ -17,9 +17,12 @@ import {
     KeyboardAvoidingView
 } from 'react-native';
 import CheckBox from '@react-native-community/checkbox'
+import { useDispatch } from "react-redux";
+import { register } from "../redux/actions/auth";
 
 
 const SignUpScreen = ({ navigation }) => {
+    const dispatch = useDispatch();
     const [errors, setErrors] = useState({})
     const [fields, setFields] = useState({})
     // const [email, setEmail] = useState('');
@@ -31,6 +34,7 @@ const SignUpScreen = ({ navigation }) => {
     // const [confirmPassword, setConfirmPassword] = useState('');
     const [isDisplay, setIsDisplay] = useState(false);
     const [isMatch, setIsMatch] = useState(false);
+    const [loading, setLoading] = useState(false);
 
 
     let screenHeight = Dimensions.get('window').height;
@@ -160,9 +164,16 @@ const SignUpScreen = ({ navigation }) => {
     }
 
     const onPress = () => {
-        console.log("fields ==>", fields);
+        console.log("fields 11==>", fields);
         if (handleValidation()) {
             console.log('form submit')
+            dispatch(register(fields))
+                .then((res) => {
+                    console.log("res ===>", res)
+                })
+                .catch(() => {
+                    setLoading(false);
+                });
         } else {
             console.log('form error')
         }

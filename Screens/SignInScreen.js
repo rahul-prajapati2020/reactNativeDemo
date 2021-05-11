@@ -16,13 +16,17 @@ import {
     ScrollView,
 } from 'react-native';
 import CheckBox from '@react-native-community/checkbox'
+import { login } from "../redux/actions/auth";
+import { useDispatch } from "react-redux";
 
 
 const SignInScreen = ({ navigation }) => {
+    const dispatch = useDispatch();
     const [isDisplay, setIsDisplay] = useState(false);
     const [isSelected, setSelection] = useState(false);
     const [errors, setErrors] = useState({})
     const [fields, setFields] = useState({})
+    const [loading, setLoading] = useState(false);
 
 
     let screenHeight = Dimensions.get('window').height;
@@ -62,9 +66,16 @@ const SignInScreen = ({ navigation }) => {
     }
 
     const onPress = () => {
-        console.log("fields ==>", fields);
+        console.log("fields 121==>", fields);
         if (handleValidation()) {
             console.log('form submit')
+            dispatch(login(fields))
+                .then((res) => {
+                    console.log("res ===>", res)
+                })
+                .catch(() => {
+                    setLoading(false);
+                });
         } else {
             console.log('form error')
         }

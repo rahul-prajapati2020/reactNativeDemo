@@ -6,7 +6,7 @@
  * @flow strict-local
  */
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Button,
   View,
@@ -25,6 +25,8 @@ import {
   DrawerItem,
 } from '@react-navigation/drawer';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { Provider as StoreProvider, useDispatch, useSelector } from "react-redux";
+import store from "./redux/store";
 
 /**
  *  Screens
@@ -38,13 +40,16 @@ import ProfileScreen from "./Screens/ProfileScreen";
 import WalletScreen from "./Screens/WalletScreen";
 import SignUpScreen from "./Screens/SignUpScreen";
 
+import { logout, checkLogin } from "./redux/actions/auth";
+import { clearMessage } from "./redux/actions/message";
+//import { history } from "./redux/helpers/history";
+
 /**
  *  const
  */
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
 const Tab = createBottomTabNavigator();
-
 
 
 const NavigationDrawerStructure = (props) => {
@@ -340,16 +345,48 @@ const AppAuthStack = ({ navigation }) => {
   );
 }
 
+const AppNavigator = (props) => {
+  const { isLoggedIn, user: currentUser } = useSelector((state) => {
+    //console.log("state 11==>", state)
+    return state.auth
+  });
+  const dispatch = useDispatch();
+  const [isLogin, setIsLogin] = useState(isLoggedIn ? true : false)
 
-const App = ({ navigation }) => {
+  /**
+   * clear message when changing location
+   */
+  useEffect(() => {
+    // console.log("currentUser ==>", currentUser)
+    //console.log("isLoggedIn ==>", isLoggedIn)
+    //console.log("isLogin ==>", isLogin)
+    //history.listen((location) => {
+    dispatch(checkLogin());
+    dispatch(clearMessage()); // clear message when changing location
+    //});
+  }, [dispatch]);
 
-  const [isLogin, setIsLogin] = useState(true)
+  /**
+   * logout 
+   */
+  const logOut = () => {
+    dispatch(logout());
+  };
 
   return (
     <NavigationContainer>
-      { isLogin && <AppDrawer />}
+      {isLogin && <AppDrawer />}
       {!isLogin && <AppAuthStack />}
     </NavigationContainer>
+  )
+}
+
+
+const App = ({ navigation }) => {
+  return (
+    <StoreProvider store={store}>
+      <AppNavigator />
+    </StoreProvider>
   );
 };
 
