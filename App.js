@@ -277,6 +277,16 @@ const WalletScreenStack = ({ navigation }) => {
 }
 
 const CustomDrawerContent = (props) => {
+
+  const dispatch = useDispatch();
+  /**
+  * logout 
+  */
+  const logOut = () => {
+    console.log("call logout")
+    dispatch(logout());
+  };
+
   return (
     <DrawerContentScrollView {...props}>
       <View style={{ backgroundColor: '#f4511e', opacity: 0.9, height: 100, marginTop: 0, flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-start' }}>
@@ -302,6 +312,10 @@ const CustomDrawerContent = (props) => {
         label="Toggle drawer"
         onPress={() => props.navigation.toggleDrawer()}
       /> */}
+      <DrawerItem
+        label="Logout"
+        onPress={() => logOut()}
+      />
     </DrawerContentScrollView>
   );
 }
